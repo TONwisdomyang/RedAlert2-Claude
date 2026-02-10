@@ -4,14 +4,15 @@ Add immersive Red Alert 2 sound effects to your Claude Code experience! Hear aut
 
 ## 🎵 Sound Effects
 
-This system uses 4 carefully selected Red Alert 2 sounds:
+This system uses 5 carefully selected Red Alert 2 sounds:
 
 | Event | Sound | Description |
 |-------|-------|-------------|
-| **Task Complete** | Building Placement | Satisfying completion sound when Claude finishes |
-| **Session Start** | GI Deploy "Ready!" | American GI saying "Ready!" when you start Claude |
+| **Task Complete** | Mission Complete | Red Alert 2 mission complete sound |
+| **Session Start** | GI "Yes, Sir!" | American GI saying "是，长官！" when you start Claude |
 | **Prompt Submit** | Prism Tank Attack | **"Calculating Reflection Arcs!"** - Prism Tank attack command |
-| **Context Compact** | Nuclear Silo Ready | EVA voice alert before context compression |
+| **Context Compact** | Nuclear Warning | EVA nuclear silo warning alert |
+| **Approval Needed** | Kirov Reporting | **"基洛夫报到"** - Kirov airship when Claude needs your approval |
 
 ## 📋 Prerequisites
 
@@ -49,15 +50,16 @@ source ~/.zshrc
 
 2. **Create directories**
    ```bash
-   mkdir -p ~/.claude/sounds/{done,start,userpromptsubmit,precompact}
+   mkdir -p ~/.claude/sounds/{done,start,userpromptsubmit,precompact,approval}
    ```
 
 3. **Copy audio files**
    ```bash
-   cp sounds/uplace.wav ~/.claude/sounds/done/
-   cp sounds/igidepa.wav ~/.claude/sounds/start/
+   cp sounds/task-complete.wav ~/.claude/sounds/done/
+   cp sounds/session-start.wav ~/.claude/sounds/start/
    cp sounds/vpriata.wav ~/.claude/sounds/userpromptsubmit/
-   cp sounds/snukread.wav ~/.claude/sounds/precompact/
+   cp sounds/context-compact.wav ~/.claude/sounds/precompact/
+   cp sounds/approval-needed.wav ~/.claude/sounds/approval/
    ```
 
 4. **Install the sound watcher script**
@@ -158,8 +160,11 @@ claude_sound_watcher_restart   # Restart the sound watcher
 touch ~/.claude/.claude-done      # Task complete sound
 touch ~/.claude/.claude-start     # Session start sound
 touch ~/.claude/.claude-prompt    # Prompt submit sound (Prism Tank!)
-touch ~/.claude/.claude-compact   # Context compact sound (EVA voice!)
+touch ~/.claude/.claude-compact   # Context compact sound (Nuclear warning!)
+touch ~/.claude/.claude-approval  # Approval needed sound (Kirov reporting!)
 ```
+
+**Note**: The approval sound is ready but currently needs to be triggered manually. Claude Code may add approval hooks in future versions.
 
 ## 🔧 Customization
 
@@ -248,15 +253,16 @@ Run again to re-enable.
 ```
 ra2-claude-sounds/
 ├── sounds/                      # Audio files
-│   ├── uplace.wav              # Building placement (task complete)
-│   ├── igidepa.wav             # GI deploy (session start)
-│   ├── vpriata.wav             # Prism Tank attack (prompt submit)
-│   └── snukread.wav            # Nuclear Silo ready (context compact)
-├── ra2-claude-sounds.zsh       # Main sound watcher script
-├── install.sh                  # Installation script
-├── HOOKS.json                  # Claude Code hooks configuration
-├── README.md                   # This file
-└── CLAUDE_PROMPT.md            # Instructions for AI assistants
+│   ├── task-complete.wav        # Mission complete (task complete)
+│   ├── session-start.wav        # GI "Yes, Sir!" (session start)
+│   ├── vpriata.wav              # Prism Tank attack (prompt submit)
+│   ├── context-compact.wav      # Nuclear warning (context compact)
+│   └── approval-needed.wav      # Kirov reporting (approval needed)
+├── ra2-claude-sounds.zsh        # Main sound watcher script
+├── install.sh                   # Installation script
+├── HOOKS.json                   # Claude Code hooks configuration
+├── README.md                    # This file
+└── CLAUDE_PROMPT.md             # Instructions for AI assistants
 ```
 
 ## 🤖 For AI Assistants

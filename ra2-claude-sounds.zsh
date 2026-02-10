@@ -12,12 +12,14 @@ export CLAUDE_DONE_FILE="${CLAUDE_DONE_FILE:-$CLAUDE_DIR/.claude-done}"
 export CLAUDE_START_FILE="${CLAUDE_START_FILE:-$CLAUDE_DIR/.claude-start}"
 export CLAUDE_PROMPT_FILE="${CLAUDE_PROMPT_FILE:-$CLAUDE_DIR/.claude-prompt}"
 export CLAUDE_PRECOMPACT_FILE="${CLAUDE_PRECOMPACT_FILE:-$CLAUDE_DIR/.claude-compact}"
+export CLAUDE_APPROVAL_FILE="${CLAUDE_APPROVAL_FILE:-$CLAUDE_DIR/.claude-approval}"
 
 # Sound directories
 export CLAUDE_DONE_SOUNDS="${CLAUDE_DONE_SOUNDS:-$CLAUDE_SOUNDS_DIR/done}"
 export CLAUDE_START_SOUNDS="${CLAUDE_START_SOUNDS:-$CLAUDE_SOUNDS_DIR/start}"
 export CLAUDE_PROMPT_SOUNDS="${CLAUDE_PROMPT_SOUNDS:-$CLAUDE_SOUNDS_DIR/userpromptsubmit}"
 export CLAUDE_PRECOMPACT_SOUNDS="${CLAUDE_PRECOMPACT_SOUNDS:-$CLAUDE_SOUNDS_DIR/precompact}"
+export CLAUDE_APPROVAL_SOUNDS="${CLAUDE_APPROVAL_SOUNDS:-$CLAUDE_SOUNDS_DIR/approval}"
 
 CLAUDE_WATCHER_PID_FILE="$HOME/.claude_watcher.pid"
 CLAUDE_SOUNDS_ENABLED_FILE="$HOME/.claude_sounds_enabled"
@@ -60,9 +62,9 @@ _claude_validate() {
   fi
 
   # Warn about missing sound directories (non-fatal)
-  local dirs=("$CLAUDE_DONE_SOUNDS" "$CLAUDE_START_SOUNDS" "$CLAUDE_PROMPT_SOUNDS" "$CLAUDE_PRECOMPACT_SOUNDS")
-  local names=("done" "start" "userpromptsubmit" "precompact")
-  for i in {1..4}; do
+  local dirs=("$CLAUDE_DONE_SOUNDS" "$CLAUDE_START_SOUNDS" "$CLAUDE_PROMPT_SOUNDS" "$CLAUDE_PRECOMPACT_SOUNDS" "$CLAUDE_APPROVAL_SOUNDS")
+  local names=("done" "start" "userpromptsubmit" "precompact" "approval")
+  for i in {1..5}; do
     if [ ! -d "${dirs[$i]}" ]; then
       echo "claude-sounds: warning - ${names[$i]} sounds dir not found: ${dirs[$i]}" >&2
     fi
@@ -86,6 +88,7 @@ claude_sound_watcher_start() {
     _claude_watcher "$CLAUDE_START_FILE" "$CLAUDE_START_SOUNDS" &
     _claude_watcher "$CLAUDE_PROMPT_FILE" "$CLAUDE_PROMPT_SOUNDS" &
     _claude_watcher "$CLAUDE_PRECOMPACT_FILE" "$CLAUDE_PRECOMPACT_SOUNDS" &
+    _claude_watcher "$CLAUDE_APPROVAL_FILE" "$CLAUDE_APPROVAL_SOUNDS" &
     wait
   ) &
   echo $! > "$CLAUDE_WATCHER_PID_FILE"

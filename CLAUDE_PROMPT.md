@@ -5,10 +5,11 @@ This document provides instructions for AI assistants (like Claude) on how to he
 ## 📋 What This System Does
 
 This project adds Red Alert 2 sound effects to Claude Code events:
-- **Task Complete** → Building placement sound (`uplace.wav`)
-- **Session Start** → GI "Ready!" sound (`igidepa.wav`)
+- **Task Complete** → Mission complete sound (`task-complete.wav`)
+- **Session Start** → GI "Yes, Sir!" sound (`session-start.wav`)
 - **Prompt Submit** → Prism Tank "Calculating Reflection Arcs!" (`vpriata.wav`)
-- **Context Compact** → Nuclear Silo Ready EVA voice (`snukread.wav`)
+- **Context Compact** → Nuclear warning sound (`context-compact.wav`)
+- **Approval Needed** → Kirov "Kirov Reporting" sound (`approval-needed.wav`) - *Manual trigger only*
 
 ## 🎯 When Users Ask for Help
 
