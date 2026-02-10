@@ -2,6 +2,8 @@
 
 Add immersive Red Alert 2 sound effects to your Claude Code experience! Hear authentic game sounds when Claude completes tasks, starts sessions, and more.
 
+> **Multi-Platform Support**: Now available for both **macOS** and **Windows** (Git Bash / WSL)!
+
 ## 🎵 Sound Effects
 
 This system uses 5 carefully selected Red Alert 2 sounds:
@@ -14,16 +16,26 @@ This system uses 5 carefully selected Red Alert 2 sounds:
 | **Context Compact** | Nuclear Warning | EVA nuclear silo warning alert |
 | **Approval Needed** | Kirov Reporting | **"基洛夫报到"** - Kirov airship when Claude needs your approval |
 
-## 📋 Prerequisites
+## 📋 Platform Support
 
-- **macOS** (uses `afplay` for audio playback)
-- **[fswatch](https://github.com/emcrisostomo/fswatch)** for file monitoring
-- **Claude Code CLI** installed
-- **zsh** shell (default on macOS)
+### macOS
+- **Audio**: `afplay` (built-in)
+- **File Monitoring**: `fswatch` (install via brew)
+- **Shell**: zsh (default)
+
+### Windows
+- **Audio**: PowerShell `System.Media.SoundPlayer` (built-in)
+- **File Monitoring**: Polling (no dependencies)
+- **Shell**: bash (Git Bash or WSL)
 
 ## 🚀 Installation
 
-### Quick Install (Recommended)
+### Choose Your Platform
+
+<details open>
+<summary><b>macOS Installation</b></summary>
+
+#### Quick Install (Recommended)
 
 ```bash
 # 1. Install fswatch
@@ -38,10 +50,7 @@ cd RedAlert2-Claude
 source ~/.zshrc
 ```
 
-### Manual Installation
-
-<details>
-<summary>Click to expand manual installation steps</summary>
+#### Manual Installation
 
 1. **Install fswatch**
    ```bash
@@ -75,54 +84,30 @@ source ~/.zshrc
 
 6. **Configure Claude Code hooks**
 
-   Edit `~/.claude/settings.json` and add:
-   ```json
-   {
-     "hooks": {
-       "SessionStart": [
-         {
-           "matcher": "startup|clear",
-           "hooks": [
-             {
-               "type": "command",
-               "command": "touch ~/.claude/.claude-start"
-             }
-           ]
-         }
-       ],
-       "UserPromptSubmit": [
-         {
-           "hooks": [
-             {
-               "type": "command",
-               "command": "touch ~/.claude/.claude-prompt"
-             }
-           ]
-         }
-       ],
-       "Stop": [
-         {
-           "hooks": [
-             {
-               "type": "command",
-               "command": "touch ~/.claude/.claude-done"
-             }
-           ]
-         }
-       ],
-       "PreCompact": [
-         {
-           "hooks": [
-             {
-               "type": "command",
-               "command": "touch ~/.claude/.claude-compact"
-             }
-           ]
-         }
-       ]
-     }
-   }
-   ```
+   Edit `~/.claude/settings.json` and add the hooks from `HOOKS.json`
+
+</details>
+
+<details>
+<summary><b>Windows Installation (Git Bash / WSL)</b></summary>
+
+#### Quick Install (Recommended)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/op7418/RedAlert2-Claude.git
+cd RedAlert2-Claude
+
+# 2. Run the Windows installer
+./install-windows.sh
+
+# 3. Restart your Git Bash terminal
+# The sound system will start automatically
+```
+
+#### Manual Installation
+
+See [README_WINDOWS.md](README_WINDOWS.md) for detailed Windows installation instructions.
 
 </details>
 
@@ -130,23 +115,38 @@ source ~/.zshrc
 
 ### Toggle Sounds On/Off
 
+**macOS:**
 ```bash
 cst  # Quick toggle
 ```
 
-Or use the full command:
+**Windows:**
 ```bash
-claude_sounds_toggle
+claude_sounds_toggle  # or: cst
 ```
 
 ### Check Status
 
+**macOS:**
+```bash
+claude_sound_watcher_status
+```
+
+**Windows:**
 ```bash
 claude_sound_watcher_status
 ```
 
 ### Manual Control
 
+**macOS:**
+```bash
+claude_sound_watcher_start     # Start the sound watcher
+claude_sound_watcher_stop      # Stop the sound watcher
+claude_sound_watcher_restart   # Restart the sound watcher
+```
+
+**Windows:**
 ```bash
 claude_sound_watcher_start     # Start the sound watcher
 claude_sound_watcher_stop      # Stop the sound watcher
@@ -156,7 +156,7 @@ claude_sound_watcher_restart   # Restart the sound watcher
 ### Test Sounds
 
 ```bash
-# Test each sound manually
+# Test each sound manually (works on both platforms)
 touch ~/.claude/.claude-done      # Task complete sound
 touch ~/.claude/.claude-start     # Session start sound
 touch ~/.claude/.claude-prompt    # Prompt submit sound (Prism Tank!)
@@ -164,23 +164,7 @@ touch ~/.claude/.claude-compact   # Context compact sound (Nuclear warning!)
 touch ~/.claude/.claude-approval  # Approval needed sound (Kirov reporting!)
 ```
 
-**Note**: The approval sound is ready but currently needs to be triggered manually. Claude Code may add approval hooks in future versions.
-
 ## 🔧 Customization
-
-### Adjust Volume
-
-Set the volume (0.0 to 1.0) in your `~/.zshrc` before sourcing the script:
-
-```bash
-export CLAUDE_SOUND_VOLUME=0.5  # 50% volume (default is 0.3)
-source ~/.ra2-claude-sounds.zsh
-```
-
-Then restart the watcher:
-```bash
-claude_sound_watcher_restart
-```
 
 ### Add More Sounds
 
@@ -193,102 +177,111 @@ cp your-sound.wav ~/.claude/sounds/done/
 # The system will randomly pick one from the directory
 ```
 
-### Change Sound Directories
+### Adjust Volume
 
-You can override the default sound directory:
-
+**macOS:**
 ```bash
-export CLAUDE_SOUNDS_DIR="$HOME/custom/sounds"
+export CLAUDE_SOUND_VOLUME=0.5  # 50% volume (default is 0.3)
 source ~/.ra2-claude-sounds.zsh
-```
-
-## 🛠️ Troubleshooting
-
-### No sounds playing?
-
-1. **Check if fswatch is installed**
-   ```bash
-   fswatch --version
-   ```
-
-2. **Check if the watcher is running**
-   ```bash
-   claude_sound_watcher_status
-   ```
-
-3. **Verify audio files exist**
-   ```bash
-   ls -R ~/.claude/sounds/
-   ```
-
-4. **Check Claude Code hooks**
-   ```bash
-   cat ~/.claude/settings.json | grep -A 5 hooks
-   ```
-
-### Sounds too loud/quiet?
-
-```bash
-export CLAUDE_SOUND_VOLUME=0.2  # Try 20%
 claude_sound_watcher_restart
 ```
 
-### Want to disable temporarily?
+**Windows:**
+Volume control is handled by Windows system volume (PowerShell limitation).
 
-```bash
-cst  # Toggle off
-```
+## 🛠️ Troubleshooting
 
-Run again to re-enable.
+### macOS
+
+1. **No sounds playing?**
+   - Check if fswatch is installed: `fswatch --version`
+   - Check if watcher is running: `claude_sound_watcher_status`
+   - Verify audio files exist: `ls -R ~/.claude/sounds/`
+
+2. **Sounds too loud/quiet?**
+   ```bash
+   export CLAUDE_SOUND_VOLUME=0.2  # Try 20%
+   claude_sound_watcher_restart
+   ```
+
+### Windows
+
+1. **No sounds playing?**
+   - Check if watcher is running: `claude_sound_watcher_status`
+   - Verify audio files exist: `ls -R ~/.claude/sounds/`
+   - Test PowerShell: `powershell.exe -Command "echo test"`
+
+2. **Sounds overlapping (echo effect)?**
+   - Check for multiple watcher processes: `ps aux | grep claude`
+   - Restart watcher: `claude_sound_watcher_restart`
+
+For detailed troubleshooting, see:
+- macOS: This README
+- Windows: [README_WINDOWS.md](README_WINDOWS.md)
 
 ## 🎯 How It Works
 
-1. **Claude Code Hooks**: When events occur (task complete, prompt submit, etc.), Claude Code triggers hooks that create temporary files
-2. **File Watchers**: The zsh script uses `fswatch` to monitor these trigger files
-3. **Sound Playback**: When a trigger file is created, a sound from the corresponding directory is played using `afplay`, then the trigger file is deleted
-4. **Background Process**: All watchers run as a single background process
+### macOS
+1. **Claude Code Hooks** → Create trigger files
+2. **fswatch** → Monitors files (event-driven)
+3. **afplay** → Plays sounds
+4. **Background Process** → All watchers run as one process
 
-## 📝 Files Included
+### Windows
+1. **Claude Code Hooks** → Create trigger files
+2. **Polling Loop** → Checks files every 300ms
+3. **PowerShell** → Plays sounds via `System.Media.SoundPlayer`
+4. **Background Process** → All watchers run as one process
+
+## 📝 Files Structure
 
 ```
-ra2-claude-sounds/
-├── sounds/                      # Audio files
-│   ├── task-complete.wav        # Mission complete (task complete)
-│   ├── session-start.wav        # GI "Yes, Sir!" (session start)
-│   ├── vpriata.wav              # Prism Tank attack (prompt submit)
-│   ├── context-compact.wav      # Nuclear warning (context compact)
-│   └── approval-needed.wav      # Kirov reporting (approval needed)
-├── ra2-claude-sounds.zsh        # Main sound watcher script
-├── install.sh                   # Installation script
-├── HOOKS.json                   # Claude Code hooks configuration
-├── README.md                    # This file
-└── CLAUDE_PROMPT.md             # Instructions for AI assistants
+RedAlert2-Claude/
+├── sounds/                          # Shared audio files (both platforms)
+│   ├── task-complete.wav
+│   ├── session-start.wav
+│   ├── vpriata.wav
+│   ├── context-compact.wav
+│   └── approval-needed.wav
+├── ra2-claude-sounds.zsh            # macOS script
+├── ra2-claude-sounds-windows.sh     # Windows script
+├── install.sh                       # macOS installer
+├── install-windows.sh               # Windows installer
+├── README.md                        # This file (general documentation)
+├── README_WINDOWS.md                # Windows-specific documentation
+├── HOOKS.json                       # Claude Code hooks configuration
+└── LICENSE
 ```
 
-## 🤖 For AI Assistants
+## 🆚 Platform Differences
 
-If you're Claude (or another AI) helping a user with this project, see [CLAUDE_PROMPT.md](CLAUDE_PROMPT.md) for specific instructions on how to work with this sound system.
-
-## 📜 License
-
-This project is for personal use only. Red Alert 2 audio files are property of Electronic Arts Inc. and Westwood Studios.
-
-**Audio Files**: The included `.wav` files are from Command & Conquer: Red Alert 2, © EA / Westwood Studios. All rights reserved. These files are included under fair use for personal, non-commercial purposes only.
-
-**Code**: MIT License - feel free to use, modify, and distribute the scripts.
+| Feature | macOS | Windows |
+|---------|-------|---------|
+| File Monitoring | `fswatch` (event-driven) | Polling (300ms) |
+| Audio Playback | `afplay` | PowerShell |
+| Dependencies | brew, fswatch | None (Git Bash included) |
+| Shell | zsh | bash |
+| Volume Control | ✅ Supported | ❌ System volume only |
 
 ## 🙏 Credits
 
 - **Game**: Command & Conquer: Red Alert 2 by Westwood Studios / EA
 - **Inspired by**: StarCraft Claude Sounds projects
 - **Audio**: All sounds are from Red Alert 2
+- **Windows Port**: Contributed by the community
+
+## 📜 License
+
+**Audio Files**: The included `.wav` files are from Command & Conquer: Red Alert 2, © EA / Westwood Studios. All rights reserved. These files are included under fair use for personal, non-commercial purposes only.
+
+**Code**: MIT License - feel free to use, modify, and distribute the scripts.
 
 ## 🎮 Enjoy!
 
 **Kirov reporting!** 🎮🔊
 
-Now enjoy your enhanced Claude Code experience with authentic Red Alert 2 sounds!
+Now enjoy your enhanced Claude Code experience with authentic Red Alert 2 sounds on both macOS and Windows!
 
 ---
 
-**Questions or Issues?** Open an issue on GitHub or check the troubleshooting section above.
+**Questions or Issues?** Open an issue on GitHub.
