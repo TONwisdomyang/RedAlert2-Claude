@@ -1,0 +1,45 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch ~/.claude/.claude-start"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch ~/.claude/.claude-prompt"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch ~/.claude/.claude-done"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "touch ~/.claude/.claude-compact"
+          }
+        ]
+      }
+    ]
+  }
+}

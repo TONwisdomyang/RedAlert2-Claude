@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+._*
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Personal settings
+.env
+.env.local
+
+# Build artifacts
+dist/
+build/
